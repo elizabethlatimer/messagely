@@ -1,3 +1,5 @@
+const Message = require('../models/message');
+
 /** GET /:id - get detail of message.
  *
  * => {message: {id,

@@ -2,6 +2,7 @@
 
 const bcrypt = require('bcrypt');
 const db = require('../db');
+const { BCRYPT_WORK_FACTOR } = require('../config')
 
 /** User of the site. */
 
@@ -19,7 +20,7 @@ class User {
    */
 
   static async register({ username, password, first_name, last_name, phone }) {
-    let hashedPassword = await bcrypt.hash(password, 12);
+    let hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
     let registered = await db.query(`
       INSERT INTO users(username, password, first_name, last_name, phone, join_at, last_login_at)
       VALUES ($1, $2, $3, $4, $5, current_timestamp, current_timestamp)
@@ -37,7 +38,11 @@ class User {
       FROM users
       WHERE username = $1
     `, [username])
+
+    if(!user.rows[0]) return false;
+
     let authenticated = await bcrypt.compare(password, user.rows[0].password);
+
     return authenticated;
   }
 
