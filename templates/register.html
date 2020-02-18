@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+- Register
+{% endblock %}
+
+{% block content %}
+<form action="#" id="register">
+  <label for="username">Username</label><br>
+  <input type="text" name="username" required><br>
+  <label for="password">Password</label><br>
+  <input type="password" name="password" required><br>
+  <label for="first_name">First Name</label><br>
+  <input type="text" name="first_name" required><br>
+  <label for="last_name">Last Name</label><br>
+  <input type="text" name="last_name" required><br>
+  <label for="phone">Phone</label><br>
+  <input type="text" name="phone" required><br>
+  <button>Register</button>
+</form>
+
+{% endblock %}

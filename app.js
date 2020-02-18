@@ -2,6 +2,7 @@
 
 
 const express = require("express");
+const nunjucks = require("nunjucks");
 const cors = require("cors");
 const { authenticateJWT } = require("./middleware/auth");
 
@@ -10,6 +11,7 @@ const app = express();
 
 // allow both form-encoded and json body parsing
 app.use(express.json());
+app.use(express.static('static'))
 app.use(express.urlencoded({extended: true}));
 
 // allow connections to all routes from any browser
@@ -18,11 +20,33 @@ app.use(cors());
 // get auth token for all routes
 app.use(authenticateJWT);
 
+// configure nunjucks
+nunjucks.configure("templates", {
+  autoescape: true,
+  express: app
+});
+
 /** routes */
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const messageRoutes = require("./routes/messages");
+
+app.get("/", (req, res, next) => {
+  try {
+    return res.render("index.html")
+  } catch (err) {
+    return next(err);
+  }
+});
+
+app.get("/register", (req, res, next) => {
+  try {
+    return res.render("register.html")
+  } catch (err) {
+    return next(err);
+  }
+});
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
