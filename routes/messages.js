@@ -1,10 +1,8 @@
 const express = require('express');
 
 const Message = require('../models/message');
-const User = require('../models/user');
-const ExpressError = require('../expressError');
+const User = require('../models/user')
 const { ensureLoggedIn,
-  ensureCorrectUser,
   ensureCorrespondent,
   ensureRecipient } = require("../middleware/auth")
 
@@ -50,7 +48,7 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
       to_username: req.body.to_username,
       body: req.body.body
     });
-    return res.json({ message })
+    return res.status(201).json({ message });
   } catch (err) {
     return next(err);
   }
@@ -65,7 +63,7 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
  *
  **/
 
-router.post('/:id/read', ensureRecipient, async (req, rex, next) => {
+router.post('/:id/read', ensureRecipient, async (req, res, next) => {
   try {
     let message = await Message.markRead(req.params.id);
     return res.json({ message });
@@ -74,3 +72,4 @@ router.post('/:id/read', ensureRecipient, async (req, rex, next) => {
   }
 })
 
+module.exports = router;

@@ -2,6 +2,7 @@
 
 const db = require("../db");
 const ExpressError = require("../expressError");
+const User = require("../models/user")
 
 
 /** Message on the site. */
@@ -13,6 +14,11 @@ class Message {
    */
 
   static async create({ from_username, to_username, body }) {
+    let recipient = await User.get(to_username);
+    if (!recipient) {
+      throw new ExpressError("Couldn't send message as addressed", 400)
+    }
+
     const result = await db.query(
       `INSERT INTO messages (
               from_username,
@@ -23,6 +29,9 @@ class Message {
             RETURNING id, from_username, to_username, body, sent_at`,
       [from_username, to_username, body]);
 
+    if (!result.rows[0]) {
+      throw new ExpressError ("Message couldn't be sent", 400);
+    }
     return result.rows[0];
   }
 
